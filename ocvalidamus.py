@@ -39,60 +39,80 @@ class OCValidamus:
 
     def check_acpi(self):
         print(f"\n{Colors.HEADER}---CHECK ACPI---{Colors.ENDC}")
-        for ssdt in self.pl['ACPI']['Add']:
-            print(f"Checking {Colors.OKCYAN}{ssdt['Path']}{Colors.ENDC} ({ssdt['Comment']})")
-            if os.path.exists(f"EFI/OC/ACPI/{ssdt['Path']}"):
-                print(f"\t- {Colors.OKGREEN}{ssdt['Path']}{Colors.ENDC} exists")
-            else:
-                print(f"\t- {Colors.FAIL}{ssdt['Path']}{Colors.ENDC} does not exists")
-                self.errors += 1
+        if self.pl['ACPI']['Add'] != list():
+            for ssdt in self.pl['ACPI']['Add']:
+                if ssdt['Enabled']:
+                    print(f"Checking {Colors.OKCYAN}{ssdt['Path']}{Colors.ENDC} {Colors.UNDERLINE}({ssdt['Comment']}){Colors.ENDC}")
+                    if os.path.exists(f"EFI/OC/ACPI/{ssdt['Path']}"):
+                        print(f"\t- {Colors.OKGREEN}{ssdt['Path']}{Colors.ENDC} exists")
+                    else:
+                        print(f"\t- {Colors.FAIL}{ssdt['Path']}{Colors.ENDC} does not exists")
+                        self.errors += 1
+                else:
+                    print(f"Skipping {Colors.WARNING}{ssdt['Path']}{Colors.ENDC} {Colors.UNDERLINE}({ssdt['Comment']}){Colors.ENDC} as it's disabled")
+        else:
+            print(f'\t{Colors.WARNING}There are no ACPI{Colors.ENDC}')
 
     def check_driver(self):
         print(f"\n{Colors.HEADER}---CHECK Drivers---{Colors.ENDC}")
-        for driver in self.pl['UEFI']['Drivers']:
-            print(f'Checking {Colors.OKCYAN}{driver["Path"]}{Colors.ENDC} ({driver["Comment"]})')
-            if os.path.exists(f'EFI/OC/Drivers/{driver["Path"]}'):
-                print(f"\t- {Colors.OKGREEN}{driver['Path']}{Colors.ENDC} exists")
-            else:
-                print(f"\t- {Colors.FAIL}{driver['Path']}{Colors.ENDC} does not exist")
-                self.errors += 1
+        if self.pl['UEFI']['Drivers'] != list():
+            for driver in self.pl['UEFI']['Drivers']:
+                if driver['Enabled']:
+                    print(f"Checking {Colors.OKCYAN}{driver['Path']}{Colors.ENDC} {Colors.UNDERLINE}({driver['Comment']}){Colors.ENDC}")
+                    if os.path.exists(f'EFI/OC/Drivers/{driver["Path"]}'):
+                        print(f"\t- {Colors.OKGREEN}{driver['Path']}{Colors.ENDC} exists")
+                    else:
+                        print(f"\t- {Colors.FAIL}{driver['Path']}{Colors.ENDC} does not exist")
+                        self.errors += 1
+                else:
+                    print(f"Skipping {Colors.WARNING}{driver['Path']}{Colors.ENDC} {Colors.UNDERLINE}({driver['Comment']}){Colors.ENDC} as it's disabled")
+        else:
+            print(f'\t{Colors.WARNING}There are no drivers{Colors.ENDC}')
 
     def check_kexts(self):
         print(f"\n{Colors.HEADER}---CHECK Kexts---{Colors.ENDC}")
-        for kext in self.pl['Kernel']['Add']:
-            print(f"Checking {Colors.OKCYAN}{kext['BundlePath']}{Colors.ENDC} ({kext['Comment']})")
+        if self.pl['Kernel']['Add'] != list():
+            for kext in self.pl['Kernel']['Add']:
+                if kext['Enabled']:
+                    print(f"Checking {Colors.OKCYAN}{kext['BundlePath']}{Colors.ENDC} {Colors.UNDERLINE}({kext['Comment']}){Colors.ENDC}")
 
-            if os.path.exists(f'EFI/OC/Kexts/{kext["BundlePath"]}'):
-                print(f"\t- {Colors.OKGREEN}{kext['BundlePath']}{Colors.ENDC} exist")
-            else:
-                print(f"\t- {Colors.FAIL}{kext['BundlePath']}{Colors.ENDC} does not exist")
-                self.errors += 1
+                    if os.path.exists(f'EFI/OC/Kexts/{kext["BundlePath"]}'):
+                        print(f"\t- {Colors.OKGREEN}{kext['BundlePath']}{Colors.ENDC} exist")
+                    else:
+                        print(f"\t- {Colors.FAIL}{kext['BundlePath']}{Colors.ENDC} does not exist")
+                        self.errors += 1
 
-            if os.path.exists(f'EFI/OC/Kexts/{kext["BundlePath"]}/{kext["ExecutablePath"]}'):
-                print(f"\t\t- {Colors.OKGREEN}{kext['ExecutablePath']}{Colors.ENDC} exists")
-            else:
-                print(f"\t\t- {Colors.FAIL}{kext['ExecutablePath']}{Colors.ENDC} does not exists")
-                self.errors += 1
+                    if os.path.exists(f'EFI/OC/Kexts/{kext["BundlePath"]}/{kext["ExecutablePath"]}'):
+                        print(f"\t\t- {Colors.OKGREEN}{kext['ExecutablePath']}{Colors.ENDC} exists")
+                    else:
+                        print(f"\t\t- {Colors.FAIL}{kext['ExecutablePath']}{Colors.ENDC} does not exists")
+                        self.errors += 1
 
-            if os.path.exists(f'EFI/OC/Kexts/{kext["BundlePath"]}/{kext["PlistPath"]}'):
-                print(f"\t\t- {Colors.OKGREEN}{kext['PlistPath']}{Colors.ENDC} exists")
-            else:
-                print(f"\t\t- {Colors.FAIL}{kext['PlistPath']}{Colors.ENDC} does not exists")
-                self.errors += 1
+                    if os.path.exists(f'EFI/OC/Kexts/{kext["BundlePath"]}/{kext["PlistPath"]}'):
+                        print(f"\t\t- {Colors.OKGREEN}{kext['PlistPath']}{Colors.ENDC} exists")
+                    else:
+                        print(f"\t\t- {Colors.FAIL}{kext['PlistPath']}{Colors.ENDC} does not exists")
+                        self.errors += 1
+                else:
+                    print(f"Skipping {Colors.WARNING}{kext['BundlePath']}{Colors.ENDC} {Colors.UNDERLINE}({kext['Comment']}){Colors.ENDC} as it's disabled")
+        else:
+            print(f'\t{Colors.WARNING}There are no kexts{Colors.ENDC}')
 
     def check_tools(self):
         print(f"\n{Colors.HEADER}---CHECK Tools---{Colors.ENDC}")
         if self.pl['Misc']['Tools'] != list():
             for tool in self.pl['Misc']['Tools']:
-                print(f"Checking {Colors.OKCYAN}{tool['Path']}{Colors.ENDC} ({tool['Comment']})")
-                if os.path.exists(f'EFI/OC/Tools/{tool["Path"]}'):
-                    print(f"""\t - {Colors.OKGREEN}{tool['Path']}{Colors.ENDC} exists""")
+                if tool['Enabled']:
+                    print(f"Checking {Colors.OKCYAN}{tool['Path']}{Colors.ENDC} ({tool['Comment']})")
+                    if os.path.exists(f'EFI/OC/Tools/{tool["Path"]}'):
+                        print(f"""\t - {Colors.OKGREEN}{tool['Path']}{Colors.ENDC} exists""")
+                    else:
+                        print(f"""\t - {Colors.FAIL}{tool['Path']}{Colors.ENDC} does not exists""")
+                        self.errors += 1
                 else:
-                    print(f"""\t - {Colors.FAIL}{tool['Path']}{Colors.ENDC} does not exists""")
-                    self.errors += 1
-
+                    print(f"Skipping {Colors.WARNING}{tool['Path']}{Colors.ENDC} {Colors.UNDERLINE}({tool['Comment']}){Colors.ENDC} as it's disabled")
         else:
-            print(f'{Colors.WARNING}There are no tools{Colors.ENDC}')
+            print(f'\t{Colors.WARNING}There are no tools{Colors.ENDC}')
 
 
 if __name__ == '__main__':
