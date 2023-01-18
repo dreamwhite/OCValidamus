@@ -151,7 +151,7 @@ class OCValidamus:
         for tool in tools:
             if tool["Enabled"]:
                 print(
-                    f"Checking {Colors.OKCYAN}{tool['Path']}{Colors.ENDC} ({tool['Comment']})"
+                    f"Checking {Colors.OKCYAN}{tool['Path']}{Colors.ENDC} {Colors.UNDERLINE}({tool['Comment']}){Colors.ENDC}"
                 )
 
                 if os.path.exists(path / tool["Path"]):
