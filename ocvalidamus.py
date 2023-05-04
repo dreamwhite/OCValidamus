@@ -1,4 +1,3 @@
-import enum
 import os
 import pathlib
 import plistlib
@@ -8,7 +7,7 @@ import sys
 FOLDERS_FILES_CHECK = ("EFI", "EFI/OC", "EFI/OC/config.plist")
 
 
-class Colors(str, enum.Enum):
+class Colors():
     HEADER = "\033[95m"
     OKBLUE = "\033[94m"
     OKCYAN = "\033[96m"
