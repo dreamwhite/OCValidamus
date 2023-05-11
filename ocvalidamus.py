@@ -24,6 +24,7 @@ class OCValidamus:
         self.pl: dict = None
 
         self.errors: int = 0
+        self.path: pathlib.PosixPath | pathlib.WindowsPath = None
 
     def load_config(self) -> dict:
         path = pathlib.Path(".")
@@ -34,7 +35,9 @@ class OCValidamus:
                     f"{Colors.FAIL}{p} not found{Colors.ENDC}"
                 )
 
-        with open("EFI/OC/config.plist", "rb") as f:
+        self.path = path / "EFI" / "OC"
+
+        with open(self.path / "config.plist", "rb") as f:
             return plistlib.load(f)
 
     def check_acpi(self):
@@ -44,13 +47,15 @@ class OCValidamus:
             print(f"\t{Colors.WARNING}There are no ACPI{Colors.ENDC}")
             return
 
+        path = self.path / "ACPI"
+
         for ssdt in acpi:
             if ssdt["Enabled"]:
                 print(
                     f"Checking {Colors.OKCYAN}{ssdt['Path']}{Colors.ENDC} {Colors.UNDERLINE}({ssdt['Comment']}){Colors.ENDC}"
                 )
 
-                if os.path.exists(f"EFI/OC/ACPI/{ssdt['Path']}"):
+                if os.path.exists(path / ssdt['Path']):
                     print(
                         f"\t- {Colors.OKGREEN}{ssdt['Path']}{Colors.ENDC} exists"
                     )
@@ -71,13 +76,15 @@ class OCValidamus:
             print(f"\t{Colors.WARNING}There are no drivers{Colors.ENDC}")
             return
 
+        path = self.path / "Drivers"
+
         for driver in driver:
             if driver["Enabled"]:
                 print(
                     f"Checking {Colors.OKCYAN}{driver['Path']}{Colors.ENDC} {Colors.UNDERLINE}({driver['Comment']}){Colors.ENDC}"
                 )
 
-                if os.path.exists(f'EFI/OC/Drivers/{driver["Path"]}'):
+                if os.path.exists(path / driver["Path"]):
                     print(
                         f"\t- {Colors.OKGREEN}{driver['Path']}{Colors.ENDC} exists"
                     )
@@ -98,16 +105,18 @@ class OCValidamus:
             print(f"\t{Colors.WARNING}There are no kexts{Colors.ENDC}")
             return
 
+        path_kexts = self.path / "Kexts"
+
         for kext in kexts:
             if kext["Enabled"]:
                 print(
                     f"Checking {Colors.OKCYAN}{kext['BundlePath']}{Colors.ENDC} {Colors.UNDERLINE}({kext['Comment']}){Colors.ENDC}"
                 )
 
-                path = pathlib.Path(f"EFI/OC/Kexts/{kext['BundlePath']}")
+                path = pathlib.Path(path_kexts / kext['BundlePath'])
 
                 if path.exists():
-                    print(f"\t- {Colors.OKGREEN}{path}{Colors.ENDC} exist")
+                    print(f"\t- {Colors.OKGREEN}{path.name}{Colors.ENDC} exist")
                 else:
                     print(
                         f"\t- {Colors.FAIL}{path}{Colors.ENDC} does not exist"
@@ -136,13 +145,15 @@ class OCValidamus:
             print(f"\t{Colors.WARNING}There are no tools{Colors.ENDC}")
             return
 
+        path = self.path / "Tools"
+
         for tool in tools:
             if tool["Enabled"]:
                 print(
                     f"Checking {Colors.OKCYAN}{tool['Path']}{Colors.ENDC} {Colors.UNDERLINE}({tool['Comment']}){Colors.ENDC}"
                 )
 
-                if os.path.exists(f'EFI/OC/Tools/{tool["Path"]}'):
+                if os.path.exists(path / tool["Path"]):
                     print(
                         f"""\t - {Colors.OKGREEN}{tool['Path']}{Colors.ENDC} exists"""
                     )
